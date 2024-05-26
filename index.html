@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Computer Studies Quiz</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f9f9f9;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+    .container {
+      width: 80%;
+      max-width: 800px;
+      background: white;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      padding: 20px;
+      border-radius: 8px;
+      margin: 20px;
+    }
+    .question {
+      margin-bottom: 20px;
+      padding: 15px;
+      border-bottom: 1px solid #eee;
+    }
+    .question p {
+      font-size: 1.1em;
+      margin: 0;
+      margin-bottom: 10px;
+    }
+    .options {
+      list-style-type: none;
+      padding: 0;
+      margin: 0;
+    }
+    .options li {
+      margin-bottom: 10px;
+    }
+    .options input[type="radio"] {
+      margin-right: 10px;
+    }
+    button {
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      text-align: center;
+      font-size: 1em;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+    button:hover {
+      background-color: #45a049;
+    }
+    #result {
+      margin-top: 20px;
+    }
+    #result h2 {
+      margin-top: 0;
+    }
+    .correct {
+      color: green;
+    }
+    .incorrect {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div id="quiz-container"></div>
+  <button onclick="submitQuiz()">Submit Quiz</button>
+  <div id="result"></div>
+</div>
+
+<script>
+  const questions = [
+    {
+      question: "1. In a spreadsheet program, the cell which is currently in use is called...",
+      options: ["Active cell", "Active selector", "Cell frame", "Cell identifier"],
+      answer: "Active cell"
+    },
+    {
+      question: "2. ... is storage that holds start up instructions and configuration information of the computer system.",
+      options: ["ALU", "BIOS", "RAM", "ROM"],
+      answer: "BIOS"
+    },
+    {
+      question: "3. An example of software that changes spoken words into data is...",
+      options: ["Multimedia", "Operating system", "Sound recognition", "Speech recognition"],
+      answer: "Speech recognition"
+    },
+    {
+      question: "4. Which feature displays all slides in a presentation program?",
+      options: ["Normal view", "Outline view", "Slide show view", "Slide sorter view"],
+      answer: "Slide sorter view"
+    },
+    {
+      question: "5. The set of characters that have the same appearance is called...",
+      options: ["Default", "Font", "Style", "Text"],
+      answer: "Font"
+    },
+    {
+      question: "6. ... is the process of feeding instructions into a computer system.",
+      options: ["Accessing", "Entering", "Inputting", "Outputting"],
+      answer: "Inputting"
+    },
+    {
+      question: "7. Which device is used to read pencil marks on a questionnaire?",
+      options: ["OCR", "OMR", "MICR", "SMR"],
+      answer: "OMR"
+    },
+    {
+      question: "8. ... is program designed to perform specific tasks.",
+      options: ["Application software", "Operating system", "System software", "Utility software"],
+      answer: "Application software"
+    },
+    {
+      question: "9. Date and time are displayed on the ... bar.",
+      options: ["Scroll", "Status", "System", "Task"],
+      answer: "Task"
+    },
+    {
+      question: "10. Portrait and landscape are page ...",
+      options: ["Defaults", "Layouts", "Margins", "Orientations"],
+      answer: "Orientations"
+    },
+    {
+      question: "11. A laser printer uses ...",
+      options: ["Correction fluid", "Ink cartridge", "Photocopy ink", "Toner cartridge"],
+      answer: "Toner cartridge"
+    },
+    {
+      question: "12. In word processing, to embolden means to ...",
+      options: ["Change the color of the text", "Change the font name of the text", "Increase the font", "Make the text bold"],
+      answer: "Make the text bold"
+    },
+    {
+      question: "13. The part of memory which temporarily holds information for later use is referred to as ...",
+      options: ["Clipboard", "Clipart", "Desktop", "Flash disk"],
+      answer: "Clipboard"
+    },
+    {
+      question: "14. Backing up of computer data is the process of ...",
+      options: ["Putting data in the memory of the computer", "Putting the computer in the back of the room", "Storing an extra copy of data on the hard disk", "Storing an extra copy on an external storage device"],
+      answer: "Storing an extra copy on an external storage device"
+    },
+    {
+      question: "15. Which input device is found in a washing machine?",
+      options: ["Heater", "Keypad", "Motor", "Powder drawer"],
+      answer: "Keypad"
+    },
+    {
+      question: "16. When using publishing software, what is the process of removing a portion of a graphic called?",
+      options: ["Cropping", "Cutting", "Resizing", "Trimming"],
+      answer: "Cropping"
+    },
+    {
+      question: "17. The process of transferring files from a computer to the Internet is called ...",
+      options: ["Downloading", "Forwarding", "Surfing", "Uploading"],
+      answer: "Uploading"
+    },
+    {
+      question: "18. Which shortcut key inserts a new slide in a current presentation?",
+      options: ["Ctrl + M", "Ctrl + N", "Ctrl + O", "Ctrl + S"],
+      answer: "Ctrl + M"
+    },
+    {
+      question: "19. ... is the adjustment of the spacing between two characters to make text fit in a given space.",
+      options: ["Alignment", "Body text", "Drop cap", "Kerning"],
+      answer: "Kerning"
+    },
+    {
+      question: "20. ... is the space placed between columns in a design.",
+      options: ["Emphasis", "Gutter", "Harmony", "Scaling"],
+      answer: "Gutter"
+    }
+  ];
+
+  function buildQuiz() {
+    const container = document.getElementById('quiz-container');
+    questions.forEach((q, index) => {
+      const questionDiv = document.createElement('div');
+      questionDiv.className = 'question';
+      questionDiv.innerHTML = `<p>${q.question}</p>`;
+      const optionsList = document.createElement('ul');
+      optionsList.className = 'options';
+      q.options.forEach((option, idx) => {
+        const listItem = document.createElement('li');
+        listItem.innerHTML = `<label><input type="radio" name="question${index}" value="${option}">${option}</label>`;
+        optionsList.appendChild(listItem);
+      });
+      questionDiv.appendChild(optionsList);
+      container.appendChild(questionDiv);
+    });
+  }
+
+  function submitQuiz() {
+    const answers = [];
+    let score = 0;
+    questions.forEach((q, index) => {
+      const selectedOption = document.querySelector(`input[name="question${index}"]:checked`);
+      if (selectedOption) {
+        answers.push(selectedOption.value);
+        if (selectedOption.value === q.answer) {
+          score++;
+        }
+      } else {
+        answers.push(null);
+      }
+    });
+    showResult(answers, score);
+  }
+
+  function showResult(answers, score) {
+    const resultContainer = document.getElementById('result');
+    resultContainer.innerHTML = `<h2>Quiz Result</h2><p>Your score: ${score} out of ${questions.length}</p>`;
+    questions.forEach((q, index) => {
+      const resultDiv = document.createElement('div');
+      resultDiv.innerHTML = `<p><strong>${q.question}</strong></p>`;
+      const selectedOption = answers[index];
+      if (selectedOption === q.answer) {
+        resultDiv.innerHTML += '<p class="correct">Correct</p>';
+      } else {
+        resultDiv.innerHTML += `<p class="incorrect">Incorrect. Correct answer: ${q.answer}</p>`;
+      }
+      resultContainer.appendChild(resultDiv);
+    });
+  }
+
+  buildQuiz();
+</script>
+
+</body>
+</html>
